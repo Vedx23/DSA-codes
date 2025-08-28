@@ -153,19 +153,86 @@ class BST{
         }
     }
 
-    private void preOrderNoRec(Node trav){
+    private void preOrderNoRec(Node trav) {
 
         Stack<Node> stk = new Stack<Node>();
 
-        while (trav != null || !stk.isEmpty()) {
-            while (trav != null) {
-                if (trav.right != null) {
-                    stk.push(trav.right);
+        while(trav != null){
+        while (trav != null) {
+            System.out.print(trav.data + " ");
+            if (trav.right != null) {
+                stk.push(trav.right);
                 }
-                System.out.println(trav.data);
                 trav = trav.left;
             }
+            if(!stk.isEmpty())
+                trav = stk.pop();
         }
+    }
+
+    public void preOrderNoRec(){
+        if(root != null){
+            System.out.print("preorder nrc => ");
+            preOrderNoRec(root);
+            System.out.println();
+        }
+    }
+
+    private void inOrderNoRec(Node trav){
+        if (root != null) {
+            Stack<Node> stk = new Stack<Node>();
+            while(trav != null || !stk.isEmpty()){
+            while(trav != null){
+                stk.push(trav);
+                trav = trav.left;
+            }
+
+            if(!stk.isEmpty()){
+                trav = stk.pop();
+                System.out.print(trav.data + " ");
+                trav = trav.right;
+            }
+            }
+        }
+    }
+
+    public void inOrderNoRec(){
+        if(root != null){
+            System.out.print("Inorder no rec => ");
+            inOrderNoRec(root);
+            System.out.println();
+        }
+    }
+
+    public void postOrderNoRec(){
+        if(root != null){
+            System.out.print("postorder nrc => ");
+            postOrderNoRec(root);
+            System.out.println();
+        }
+    }
+
+    //cant understand this intuitively - why ?
+    private void postOrderNoRec(Node trav){
+
+        Stack<Node> stk = new Stack<>();
+        Node preVisited = null;
+        //LRV
+        while(trav != null || !stk.isEmpty()){
+        if(trav!=null){
+            stk.push(trav);
+            trav = trav.left;
+        }else{
+            Node top = stk.peek();
+            if(top.right != null && preVisited != top.right){
+                trav = top.right;
+            }else{
+                System.out.print(top.data + " ");
+                preVisited = stk.pop();
+                }
+            }
+        }
+
     }
 }
 
@@ -188,8 +255,11 @@ public class Example01 {
         tree.addNode(25);
 
         tree.preorder();
+        tree.preOrderNoRec();
         tree.inorder();
+        tree.inOrderNoRec();
         tree.postorder();
+        tree.postOrderNoRec();
 
     }
 }
