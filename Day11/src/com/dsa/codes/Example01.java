@@ -8,6 +8,8 @@ package com.dsa.codes;
 * the null checks in public caller functions for those recursive prints is on the root instead not on trav
 * */
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 class BST{
@@ -34,6 +36,7 @@ class BST{
 
         if(root == null){
             root = new Node(data);
+            System.out.println("Node added " + data);
         }else{
 
             Node trav = root;
@@ -211,7 +214,6 @@ class BST{
             System.out.println();
         }
     }
-
     //cant understand this intuitively - why ?
     private void postOrderNoRec(Node trav){
 
@@ -233,6 +235,122 @@ class BST{
             }
         }
 
+    }
+
+
+    private Node[] getNodeWithParent(int key){
+
+        Node trav = root;
+        Node parent = null;
+
+        if(trav != null){
+            while(trav != null) {
+                if (trav.data == key) {
+                    return new Node[]{trav, parent}; //parent is either null or not null
+                } else {
+                    parent = trav;
+                    if (key < trav.data) {
+                        trav = trav.left;
+                    } else {
+                        trav = trav.right;
+                    }
+                }
+            }
+        }
+        return new Node[]{trav, parent}; //element not found i.e trav is null
+    }
+
+    //Stack is required
+    //not BST specific
+
+    public void depthFirstSearch(int key){
+        Stack<Node> stk = new Stack<>();
+        stk.push(root);
+        while(!stk.isEmpty()){
+            Node trav = stk.pop();
+            if(key == trav.data){
+                System.out.println("Key Found");
+                return;
+            }else{
+                if(trav.right != null){
+                    stk.push(trav.right);
+                }
+
+                if(trav.left != null) {
+                    stk.push(trav.left);
+                }
+            }
+        }
+        System.out.println("Key not found");
+    }
+    //Queue is required
+    //not BST specific
+    public void breadthFirstSearch(int key){
+        Queue<Node> q = new LinkedList<>();
+
+        q.offer(root);
+        while (!q.isEmpty()){
+            Node trav = q.poll();
+            if(trav.data == key){
+                System.out.println("Key Found");
+                return;
+            }
+            else{
+                if(trav.left!=null){
+                    q.offer(trav.left);
+                }
+                if(trav.right!=null){
+                    q.offer(trav.right);
+                }
+            }
+        }
+        System.out.println("Key not found");
+    }
+
+    public void delete(int key){
+
+        Node[] targets = getNodeWithParent(key);
+        Node target = targets[0];
+        Node parent = targets[1];
+
+        if(target == null) {
+            System.out.println(key + " not found");
+            return;
+        }
+
+        if(target.left != null && target.right != null){
+            //find inorder successor
+            parent = target;
+            Node s = target.right;
+
+            while(s.left != null){
+                parent = s;
+                s = s.left;
+            }
+            //data replaced with inorder successor data
+            target.data = s.data;
+            target = s; //target updated with inorder successor to be deleted now
+        }
+
+        //node has only left child, right is null
+        if(target.right == null){
+            if(target == root){
+                root = target.left;
+            }else if(target == parent.left){
+                parent.left = target.left;
+            }else{
+                parent.right = target.left;
+            }
+        }else{
+            if(target == root){
+                root = target.right;
+            }else if(parent.left == target){
+                parent.left = target.right;
+            }else{
+                parent.right = target.right;
+            }
+        }
+        //all 3 cases handled.
     }
 }
 
@@ -260,6 +378,13 @@ public class Example01 {
         tree.inOrderNoRec();
         tree.postorder();
         tree.postOrderNoRec();
+
+        tree.delete(50);
+        tree.delete(10);
+        tree.delete(25);
+        tree.delete(75);
+        tree.delete(90);
+        tree.inorder();
 
     }
 }
