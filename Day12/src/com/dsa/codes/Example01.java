@@ -63,7 +63,7 @@ class AVLTree{
             }
         }
         //balance node
-        updateHeight(trav);
+        updateHeight(trav); //update the new height then balance it, if the balance factor is not stable.
         int bf = getBalanceFactor(trav);
         if(bf > 1 && data < trav.left.data){
             System.out.println("LL case");
@@ -89,16 +89,69 @@ class AVLTree{
         }
     }
 
-    public void delete(int key){
-        //delete node
+    private Node[] getNodeWithParent(int key){
 
-        //balance node
+        Node trav = root;
+        Node parent = null;
+        while(trav!=null){
+            if (trav.data == key){
+                return new Node[]{trav,parent};
+            }else{
+                if (key < trav.data){
+                    parent = trav;
+                    trav = trav.left;
+                }else{
+                    parent = trav;
+                    trav = trav.right;
+                }
+            }
+        }
+        return new Node[]{trav, parent};
+    }
+
+
+    public void delete(int key){
+        if(root == null){
+            return;
+        }
+
+        Node deletedNode = delete(root, key);
+    }
+
+    private Node delete(Node target, int key){
+        if (target == null){
+            return null;
+        }
+
+        if(key < target.data){
+            target.left = delete(target.left, key);
+        } else if (key > target.data) {
+            target.right = delete(target.right, key);
+        }else{ // found i.e key == target.data
+            //target is a lead node
+            if (target.left == null && target.right == null){
+                return null;
+            }else if(target.left == null){
+                target = target.right;
+            }else if(target.right == null){
+                target = target.left;
+            }else{
+
+                Node s = target.right;
+                while(s.left != null){
+                    s = s.left;
+                }
+                target.data = s.data;
+                target.right = delete(target.right, s.data);
+            }
+        }
+
+        return target;
     }
 
     private void leftRotate(Node axis, Node parent){
 
         if(axis != null){
-
           if(axis.right == null){
               return;
           }
@@ -183,7 +236,6 @@ public class Example01 {
         avt.add(4);	// RL
         avt.add(-5);
         avt.add(-4);	// LR
-
         avt.inorder();
     }
 
