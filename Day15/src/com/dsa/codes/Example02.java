@@ -41,7 +41,7 @@ public class Example02 {
         }
 
         for (k = 0; k < temp.length; k++){
-            arr[left + k] = temp[k];
+            arr[left + k] = temp[k];  //what is this doing, why are we doing left + k?
         }
 
     }
