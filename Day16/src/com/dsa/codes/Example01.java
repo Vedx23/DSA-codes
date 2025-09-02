@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 //graphs
 //undirected non weighted graph
+//adjacency matrix implementation
 class Graph{
     private int vCount, eCount;
     private boolean[][] matrix;
